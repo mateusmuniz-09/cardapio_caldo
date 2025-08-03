@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import Foods from "../Foods/Foods";
 import coscuz from "../../assets/img/coscuz.png";
 import caldoCarne from "../../assets/img/caldoCarne.png";
@@ -7,9 +7,10 @@ import pastel from "../../assets/img/pastel.png";
 import macarrao from "../../assets/img/macarrao.png";
 import batata from "../../assets/img/batata.png";
 import strognoff from "../../assets/img/strognoff.png";
+import acai from "../../assets/img/acai.png"
 
 function FoodMenu() {
-  const [food, setFood] = useState([
+  const food = [
     {
       id: 1,
       imagen: coscuz,
@@ -60,17 +61,16 @@ function FoodMenu() {
       description: "Acompanha arroz e batata palha",
       preco: 12,
     },
-  ]);
-
-  const [acai, setAcai] = useState([
-    {
+     {
       id: 1,
-      imagen: coscuz,
+      imagen: acai,
       produto: "Açaí no copo 300g",
       description: "Acompanha leite ninho, leite moça e morango",
-      preco: 12,
+      preco: 13,
     },
-  ]);
+  ];
+
+  
 
   return <Foods food={food} />;
 }

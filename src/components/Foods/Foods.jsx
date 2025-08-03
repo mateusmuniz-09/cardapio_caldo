@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import Modal from "../Modal/Modal";
+import {
+  AiOutlineArrowLeft,
+  AiOutlineClose,
+  AiOutlineArrowRight,
+} from "react-icons/ai";
+
+import { FiShoppingCart } from "react-icons/fi";
+import { BsWhatsapp } from "react-icons/bs";
 
 function Foods(props) {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +23,7 @@ function Foods(props) {
   const [nome, setNome] = useState("");
   const [endereco, setEndereco] = useState("");
   const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
+  const [observacao, setObservacao] = useState("");
 
   const abrirModal = (food) => {
     setSelectedFood(food);
@@ -32,11 +41,9 @@ function Foods(props) {
   const adicionarAoCarrinho = () => {
     if (!selectedFood) return;
 
-    // verifica se o item já está no carrinho
     const existe = cart.find((item) => item.id === selectedFood.id);
 
     if (existe) {
-      // se já existe, aumenta a quantidade
       setCart((prev) =>
         prev.map((item) =>
           item.id === selectedFood.id
@@ -45,11 +52,11 @@ function Foods(props) {
         )
       );
     } else {
-      // se não existe, adiciona com quantidade 1
       setCart((prev) => [...prev, { ...selectedFood, quantidade: 1 }]);
     }
+    alert("Item adicionado ao carrinho");
 
-    setIsOpen(false); // fecha o modal após adicionar
+    setIsOpen(false);
   };
 
   const incrementar = (id) => {
@@ -61,13 +68,12 @@ function Foods(props) {
   };
 
   const diminuir = (id) => {
-    setCart(
-      (prevCart) =>
-        prevCart
-          .map((item) =>
-            item.id === id ? { ...item, quantidade: item.quantidade - 1 } : item
-          )
-          .filter((item) => item.quantidade > 0) // remove item se a quantidade for 0
+    setCart((prevCart) =>
+      prevCart
+        .map((item) =>
+          item.id === id ? { ...item, quantidade: item.quantidade - 1 } : item
+        )
+        .filter((item) => item.quantidade > 0)
     );
   };
 
@@ -77,7 +83,7 @@ function Foods(props) {
       return;
     }
 
-    if (!nome || !endereco || !bairro || !cidade) {
+    if (!nome || !endereco || !bairro) {
       alert("Preencha todos os campos do endereço.");
       return;
     }
@@ -98,7 +104,7 @@ function Foods(props) {
 
     const mensagem = `*Novo Pedido:*\n\n${itensTexto}\n\n*Total:* R$ ${total.toFixed(
       2
-    )}\n\n*Cliente:* ${nome}\n*Endereço:* ${endereco}\n*Bairro:* ${bairro}\n*Cidade:* ${cidade}`;
+    )}\n\n*Cliente:* ${nome}\n*Endereço:* ${endereco}\n*Bairro:* ${bairro}\n*Cidade:* ${observacao}`;
 
     const numeroWhatsApp = "5588981252883"; // coloque o número com DDD + 55 no começo
     const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(
@@ -110,12 +116,12 @@ function Foods(props) {
     setNome("");
     setEndereco("");
     setBairro("");
-    setCidade("");
+    setObservacao("");
     setEnderecoOpen(false);
   };
 
   return (
-    <div className="  flex justify-center items-center p-4 h-screen  ">
+    <div className="  flex justify-center items-center p-4 h-screen mb-40 ">
       <AnimatePresence>
         {isOpen && (
           <div className="z-50">
@@ -126,7 +132,7 @@ function Foods(props) {
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="bg-white p-6 rounded-lg shadow-xl w-[100%] max-w-[800px] h-screen max-h-[600px]"
+                className="bg-white p-6 shadow-xl w-[100%] max-w-[800px] h-screen relative flex flex-col items-center"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
@@ -136,33 +142,41 @@ function Foods(props) {
                     <img
                       src={selectedFood.imagen}
                       alt={selectedFood.produto}
-                      className="w-[150px] h-[150px] object-contain mb-4"
+                      className="w-[280px] h-[280px] object-contain mb-10 rounded-xl shadow-lg shadow-gray-500"
                     />
-                    <h2 className="text-2xl font-bold mb-2">
+                    <h2 className="text-2xl font-bold mb-4">
                       {selectedFood.produto}
                     </h2>
-                    <p className="text-gray-600 mb-2">
+                    <p className="text-gray-600 mb-4 text-sm">
                       {selectedFood.description}
                     </p>
-                    <p className="text-xl font-bold text-green-600">
+                    <p className="text-4xl font-bold">
                       R$ {selectedFood.preco.toFixed(2)}
                     </p>
                   </>
                 )}
-
-                <button onClick={() => setIsOpen(false)}>Fechar</button>
                 <button
-                  className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                  className="mt-8 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                   onClick={adicionarAoCarrinho}
                 >
                   Adicionar ao Carrinho
+                </button>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="absolute top-5 left-5 bg-gray-300 rounded-full p-1"
+                >
+                  <AiOutlineArrowLeft
+                    size={30}
+                    className="text-red-600 font-bold scale-[0.98]"
+                  />
                 </button>
               </motion.div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
-      <ul className="w-[100%] max-w-[800px] flex flex-col gap-2.5  ">
+      <ul className="w-[100%] max-w-[800px] flex flex-col gap-2.5 ">
+        <h2 className="mt-15 border-b font-semibold text-red-900 py-2">Nossos produtos </h2>
         {props.food.map((food) => (
           <li
             key={food.id}
@@ -184,21 +198,24 @@ function Foods(props) {
       </ul>
 
       <div
-        className={`fixed p-3 flex justify-center items-center bg-[#000000c4]  shadow-lg transition-all duration-500 ease-in-out transform  ${
+        className={`fixed p-3 flex top-0 justify-center items-center bg-[#000000da]  shadow-lg transition-all duration-500 ease-in-out transform z-40 ${
           cartOpen
             ? "opacity-100 scale-100 h-screen w-screen"
             : "opacity-0 scale-95 h-screen w-screen pointer-events-none"
         }`}
       >
-        <div className="bg-gray-100 w-[100%] max-w-[500px] rounded-xl p-4">
+        <div className="bg-gray-100 w-[100%] max-w-[500px] rounded-xl p-4 relative">
           <button
             onClick={() => setCartOpen(false)}
-            className="mb-2 float-right"
+            className=" absolute mb-2 right-1 top-1 bg-gray-300 rounded-full p-1"
           >
-            ❌
+            <AiOutlineClose
+              size={24}
+              className="text-red-600 font-bold scale-[0.98]"
+            />
           </button>
 
-          <h2 className="text-xl font-bold mb-2">🛒 Carrinho</h2>
+          <h2 className="text-xl font-bold mb-5">🛒 Carrinho</h2>
 
           {cart.length === 0 ? (
             <p className="text-gray-500">Nenhum item no carrinho.</p>
@@ -206,7 +223,7 @@ function Foods(props) {
             <ul className="space-y-2">
               {cart.map((item) => (
                 <li key={item.id} className="flex justify-between items-center">
-                  <span>{item.produto}</span>
+                  <span className="text-sm md:text-base">{item.produto}</span>
                   <span>R$ {(item.preco * item.quantidade).toFixed(2)}</span>
 
                   <div className="flex items-center gap-2">
@@ -230,7 +247,7 @@ function Foods(props) {
           )}
 
           {cart.length > 0 && (
-            <div className="text-right font-bold text-lg mt-4 border-t-2">
+            <div className="text-left font-bold text-lg mt-4 pt-2 border-t-2">
               Total: R${" "}
               {cart
                 .reduce((soma, item) => soma + item.preco * item.quantidade, 0)
@@ -244,67 +261,95 @@ function Foods(props) {
                 setCartOpen(false);
                 setEnderecoOpen(true);
               }}
+              className="flex items-center gap-1 bg-gray-300 py-1 px-2 rounded-lg float-right mt-4"
             >
-              Avançar
+              <span>Avançar</span>{" "}
+              <AiOutlineArrowRight size={24} className="text-green-700" />
             </button>
           )}
         </div>
       </div>
 
       <div
-        className={`fixed p-4 bg-gray-100 rounded shadow-lg transition-all duration-500 ease-in-out transform  ${
+        className={`fixed p-4 bg-[#000000da] rounded top-0 shadow-lg transition-all duration-500 ease-in-out transform  flex justify-center items-center z-40 ${
           enderecoOpen
-            ? "opacity-100 scale-100 max-h-[500px]"
-            : "opacity-0 scale-95 max-h-0 pointer-events-none"
+            ? "opacity-100 scale-100 h-screen w-screen"
+            : "opacity-0 scale-95 h-screen w-screen pointer-events-none"
         }`}
       >
-        <button
-          onClick={() => {
-            setEnderecoOpen(false);
-          }}
-        >
-          ❌
-        </button>
-        <h2 className="text-lg font-bold mb-2">Endereço de Entrega</h2>
-        <input
-          type="text"
-          placeholder="Nome do cliente"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Rua, número, complemento..."
-          value={endereco}
-          onChange={(e) => setEndereco(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Bairro"
-          value={bairro}
-          onChange={(e) => setBairro(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Cidade"
-          value={cidade}
-          onChange={(e) => setCidade(e.target.value)}
-          className="w-full mb-4 p-2 border rounded"
-        />
+        <div className=" shadow-lg bg-gray-100 w-[100%] max-w-[500px] rounded-xl p-4 relative ">
+          <button
+            onClick={() => {
+              setEnderecoOpen(false);
+              setCartOpen(true);
+            }}
+            className="bg-gray-300 rounded-full p-1"
+          >
+            <AiOutlineArrowLeft
+              size={30}
+              className="text-red-600 font-bold scale-[0.98]"
+            />
+          </button>
+          <h2 className="text-lg font-bold mb-2">Endereço de Entrega</h2>
+          <input
+            type="text"
+            placeholder="Nome do cliente"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            className="w-full mb-2 p-2 border rounded"
+          />
+          <input
+            type="text"
+            placeholder="Rua, número..."
+            value={endereco}
+            onChange={(e) => setEndereco(e.target.value)}
+            className="w-full mb-2 p-2 border rounded"
+          />
+          <input
+            type="text"
+            placeholder="Bairro"
+            value={bairro}
+            onChange={(e) => setBairro(e.target.value)}
+            className="w-full mb-2 p-2 border rounded"
+          />
+          <input
+            type="text"
+            placeholder="Observação"
+            value={observacao}
+            onChange={(e) => setObservacao(e.target.value)}
+            className="w-full mb-4 p-2 border rounded"
+          />
 
+          <button
+            onClick={enviarPedido}
+            className="w-full mt-4 px-4 py-3 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Enviar Pedido via WhatsApp
+          </button>
+        </div>
+      </div>
+      <div className="fixed bg-red-900 w-[100%] max-w-[800px] p-4 bottom-0 z-20 flex justify-around shadow-[0_-6px_12px_rgba(0,0,0,0.2)] shadow-gray-500 ">
         <button
-          onClick={enviarPedido}
-          className="w-full mt-4 px-4 py-3 bg-green-600 text-white rounded hover:bg-green-700"
+          onClick={abrirCart}
+          className="flex flex-col justify-center items-center relative gap-1 text-gray-300"
         >
-          Enviar Pedido via WhatsApp
+          <FiShoppingCart size={28} />
+          <span className="text-[12px]">Carrinho</span>
+
+          {cart.length > 0 && (
+            <span className="absolute -top-2 -right-0 bg-gray-300 text-red-700 font-bold w-5 h-5 rounded-full flex items-center justify-center text-xs">
+              {cart.length}
+            </span>
+          )}
+        </button>
+
+        <button className="flex flex-col justify-center items-center relative gap-1 text-gray-300">
+          <span>
+            <BsWhatsapp size={24} />
+          </span>
+          <span className="text-[12px]">WhatsApp</span>
         </button>
       </div>
-      <button onClick={abrirCart}>
-        Carrinho <span>{`${cart.length > 0 ? cart.length : ""}`}</span>
-      </button>
     </div>
   );
 }
