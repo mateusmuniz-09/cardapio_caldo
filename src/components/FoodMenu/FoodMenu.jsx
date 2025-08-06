@@ -1,4 +1,3 @@
-
 import Foods from "../Foods/Foods";
 import coscuz from "../../assets/img/coscuz.png";
 import caldoCarne from "../../assets/img/caldoCarne.png";
@@ -7,7 +6,7 @@ import pastel from "../../assets/img/pastel.png";
 import macarrao from "../../assets/img/macarrao.png";
 import batata from "../../assets/img/batata.png";
 import strognoff from "../../assets/img/strognoff.png";
-import acai from "../../assets/img/acai.png"
+import acai from "../../assets/img/acai.png";
 
 function FoodMenu() {
   const food = [
@@ -61,7 +60,7 @@ function FoodMenu() {
       description: "Acompanha arroz e batata palha",
       preco: 12,
     },
-     {
+    {
       id: 8,
       imagen: acai,
       produto: "Açaí no copo 300g",
@@ -69,8 +68,6 @@ function FoodMenu() {
       preco: 13,
     },
   ];
-
-  
 
   return <Foods food={food} />;
 }

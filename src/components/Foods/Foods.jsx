@@ -11,6 +11,9 @@ import {
 import { FiShoppingCart } from "react-icons/fi";
 import { BsWhatsapp } from "react-icons/bs";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function Foods(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -38,6 +41,18 @@ function Foods(props) {
     localStorage.setItem("carrinho", JSON.stringify(cart));
   }, [cart]);
 
+  const adcSucesso = (nomeProduto) => {
+    toast.success(`${nomeProduto} adicionado com sucesso!`, {
+      position: "top-right", // canto superior direito
+      autoClose: 3000, // fecha sozinho em 3 segundos
+      hideProgressBar: false, // mostra barra de progresso
+      closeOnClick: true, // fecha ao clicar
+      pauseOnHover: true, // pausa se passar o mouse
+      draggable: true, // pode arrastar o alerta
+      theme: "colored", // tema colorido
+    });
+  };
+
   const adicionarAoCarrinho = () => {
     if (!selectedFood) return;
 
@@ -54,7 +69,7 @@ function Foods(props) {
     } else {
       setCart((prev) => [...prev, { ...selectedFood, quantidade: 1 }]);
     }
-    alert("Item adicionado ao carrinho");
+    adcSucesso(selectedFood.produto);
 
     setIsOpen(false);
   };
@@ -77,14 +92,51 @@ function Foods(props) {
     );
   };
 
+  const estaForaDoHorario = () => {
+    const agora = new Date();
+    console.log(agora);
+    const hora = agora.getHours();
+
+    // Horário permitido: das 18h (inclusive) até 23h (inclusive)
+    return hora < 9 || hora > 16;
+  };
+
   const enviarPedido = () => {
     if (cart.length === 0) {
-      alert("Carrinho vazio!");
+      toast.error("Seu carrinho está vazio!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+      return;
+    }
+    if (estaForaDoHorario()) {
+      toast.error("Fora do horário de atendimento! Pedidos das 18h às 23h.", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
       return;
     }
 
     if (!nome || !endereco || !bairro) {
-      alert("Preencha todos os campos do endereço.");
+      toast.error("Preencha todos os campos do endereço!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
       return;
     }
 
@@ -122,6 +174,7 @@ function Foods(props) {
 
   return (
     <div className="  flex justify-center items-center p-4 h-screen mb-40 ">
+      <ToastContainer />
       <AnimatePresence>
         {isOpen && (
           <div className="z-50">
@@ -161,6 +214,7 @@ function Foods(props) {
                 >
                   Adicionar ao Carrinho
                 </button>
+
                 <button
                   onClick={() => setIsOpen(false)}
                   className="absolute top-5 left-5 bg-gray-300 rounded-full p-1"
@@ -176,7 +230,9 @@ function Foods(props) {
         )}
       </AnimatePresence>
       <ul className="w-[100%] max-w-[800px] flex flex-col gap-2.5 ">
-        <h2 className="mt-15 border-b font-semibold text-red-900 py-2">Nossos produtos </h2>
+        <h2 className="mt-15 border-b font-semibold text-red-900 py-2">
+          Nossos produtos{" "}
+        </h2>
         {props.food.map((food) => (
           <li
             key={food.id}
